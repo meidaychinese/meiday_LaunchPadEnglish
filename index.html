@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meiday English - Tự Học Tiếng Anh</title>
+    <style>
+        :root {
+            --primary-yellow: #FFCB05;
+            --light-yellow: #FFF9E6;
+            --dark-yellow: #C69B00;
+            --bg-gray: #F8F9FA;
+            --text-dark: #2D3142;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background-color: var(--bg-gray); color: var(--text-dark); display: flex; flex-direction: column; min-height: 100vh; }
+        header { background-color: var(--primary-yellow); color: #000; padding: 20px; text-align: center; font-size: 30px; font-weight: 800; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        
+        .main-container { display: flex; flex: 1; max-width: 1300px; width: 100%; margin: 20px auto; gap: 20px; padding: 0 20px; box-sizing: border-box; }
+        
+        .sidebar { width: 280px; background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); height: fit-content; position: sticky; top: 20px; }
+        .sidebar h3 { margin-top: 0; color: var(--dark-yellow); border-bottom: 3px solid var(--primary-yellow); padding-bottom: 10px; }
+        .lesson-menu { list-style: none; padding: 0; margin: 0; }
+        .lesson-menu li { padding: 12px 15px; margin-bottom: 8px; background: var(--light-yellow); border-left: 5px solid var(--primary-yellow); border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .lesson-menu li:hover, .lesson-menu li.active { background: var(--primary-yellow); color: #000; }
+
+        .content-area { flex: 1; background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .lesson-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #EEE; padding-bottom: 15px; margin-bottom: 25px; }
+        .lesson-title { margin: 0; font-size: 26px; }
+
+        .btn-audio { background-color: var(--dark-yellow); color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-size: 16px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .btn-audio:hover { background-color: #a38000; }
+        .btn-audio-small { background: var(--light-yellow); border: 1px solid var(--primary-yellow); border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 14px; }
+
+        .section-card { border: 1px solid #EFEFEF; border-radius: 8px; padding: 20px; margin-bottom: 25px; }
+        .section-title { color: var(--dark-yellow); margin-top: 0; margin-bottom: 15px; font-size: 20px; border-bottom: 2px dashed #EEE; padding-bottom: 10px;}
+
+        .vocab-table { width: 100%; border-collapse: collapse; }
+        .vocab-table th, .vocab-table td { border: 1px solid #EAEAEA; padding: 10px; }
+        .vocab-table th { background-color: var(--light-yellow); }
+        
+        .dialogue-line { margin-bottom: 15px; font-size: 17px; line-height: 1.6; }
+        .translation-block { display: block; font-size: 15px; color: #666; font-style: italic; margin-left: 20px; }
+
+        .grammar-box { background: var(--light-yellow); padding: 20px; border-radius: 8px; line-height: 1.8; }
+        
+        .quiz-item { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed #CCC; }
+        .quiz-question { font-weight: bold; margin-bottom: 10px; font-size: 16px; }
+        .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .option-btn { background: #FFF; border: 1px solid #DDD; padding: 12px; border-radius: 5px; cursor: pointer; text-align: left; font-size: 15px; transition: 0.2s; outline: none; }
+        .option-btn:hover:not(:disabled) { background: var(--light-yellow); border-color: var(--primary-yellow); }
+        
+        .option-btn.correct { background: #d4edda; border-color: #c3e6cb; color: #155724; font-weight: bold; }
+        .option-btn.wrong { background: #f8d7da; border-color: #f5c6cb; color: #721c24; text-decoration: line-through; opacity: 0.7; }
+        .option-btn.highlight-correct { background: #d4edda; border-color: #c3e6cb; color: #155724; font-weight: bold; box-shadow: 0 0 5px #28a745; }
+
+        .feedback-area { margin-top: 15px; display: none; }
+        .btn-expl { background: #17a2b8; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; }
+        .btn-expl:hover { background: #138496; }
+        .expl-text { margin-top: 10px; padding: 15px; background: #e2f3f5; border-left: 4px solid #17a2b8; border-radius: 4px; color: #0c5460; font-size: 15px; display: none; line-height: 1.6; }
+
+        .trans-item { margin-bottom: 20px; }
+        .trans-label { font-size: 16px; font-weight: bold; display: block; margin-bottom: 8px; color: #333; }
+        .trans-input { width: 100%; padding: 10px; border: 1px solid #CCC; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+        .trans-ans-btn { margin-top: 8px; background: #e0e0e0; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .trans-result { margin-top: 8px; color: #2e7d32; font-weight: bold; display: none; background: #e8f5e9; padding: 10px; border-radius: 5px; }
+
+        footer { background-color: var(--text-dark); color: #FFF; text-align: center; padding: 15px; font-size: 14px; margin-top: auto; }
+        footer span { color: var(--primary-yellow); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <header>✨ Meiday English ✨</header>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h3>Danh sách bài học</h3>
+            <ul class="lesson-menu" id="lesson-menu"></ul>
+        </aside>
+
+        <main class="content-area">
+            <div class="lesson-header">
+                <h1 class="lesson-title" id="lesson-title">Đang tải...</h1>
+                <button class="btn-audio" onclick="playFullDialogue()">🔊 Audio bài khóa</button>
+            </div>
+
+            <section class="section-card">
+                <h2 class="section-title">📚 1. 从零开始背单词 (Vocabulary)</h2>
+                <table class="vocab-table">
+                    <thead><tr><th style="width:60px;">Nghe</th><th>Tiếng Anh</th><th>Phiên âm</th><th>Nghĩa (Trung / Việt)</th></tr></thead>
+                    <tbody id="vocab-container"></tbody>
+                </table>
+            </section>
+
+            <section class="section-card">
+                <h2 class="section-title">🎙️ 2. 课文原音 (Dialogue)</h2>
+                <div id="dialogue-container"></div>
+            </section>
+
+            <section class="section-card">
+                <h2 class="section-title">💡 3. 语法重点 (Grammar Focus)</h2>
+                <div class="grammar-box" id="grammar-container"></div>
+            </section>
+
+            <section class="section-card">
+                <h2 class="section-title">✏️ 4. 完美演练 (Multiple Choice & Cloze)</h2>
+                <div id="exercises-container"></div>
+            </section>
+
+            <section class="section-card">
+                <h2 class="section-title">✍️ 5. 能力提升 (Translation & Writing)</h2>
+                <div id="translation-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        © 2026 Meiday English - Web Application Designed by <span>TRAN MY HANH</span>
+    </footer>
+
+    <script>
+        const lessonData = {
+            1: {
+                title: "Bài 1 (Lesson 1): Excuse me!",
+                quote: "It is the first step that costs. (万事开头难 / Vạn sự khởi đầu nan.)",
+                vocab: [
+                    { e: "excuse", p: "[ɪkˈskjuːz]", t: "原谅 / tha thứ, xin lỗi" },
+                    { e: "handbag", p: "[ˈhændbæɡ]", t: "(女用)手提包 / túi xách" },
+                    { e: "pardon", p: "[ˈpɑːdn]", t: "请再说一遍 / xin nhắc lại" },
+                    { e: "this", p: "[ðɪs]", t: "这 / đây, này" },
+                    { e: "your", p: "[jɔː(r)]", t: "你的 / của bạn" },
+                    { e: "yes", p: "[jes]", t: "是的 / vâng" },
+                    { e: "pen", p: "[pen]", t: "钢笔 / bút máy" },
+                    { e: "dress", p: "[dres]", t: "连衣裙 / váy liền" },
+                    { e: "pencil", p: "[ˈpensl]", t: "铅笔 / bút chì" },
+                    { e: "book", p: "[bʊk]", t: "书 / quyển sách" },
+                    { e: "shirt", p: "[ʃɜːt]", t: "衬衫 / áo sơ mi" },
+                    { e: "skirt", p: "[skɜːt]", t: "裙子 / chân váy" },
+                    { e: "coat", p: "[kəʊt]", t: "上衣 / áo khoác" },
+                    { e: "car", p: "[kɑː(r)]", t: "小汽车 / xe hơi" },
+                    { e: "watch", p: "[wɒtʃ]", t: "手表 / đồng hồ" },
+                    { e: "me", p: "[miː]", t: "我(宾格) / tôi (tân ngữ)" },
+                    { e: "is", p: "[ɪz]", t: "be动词单三 / là" },
+                    { e: "it", p: "[ɪt]", t: "它 / nó" },
+                    { e: "thank you", p: "[θæŋk juː]", t: "感谢你 / cảm ơn" },
+                    { e: "very much", p: "[ˈveri mʌtʃ]", t: "非常地 / rất nhiều" },
+                    { e: "house", p: "[haʊs]", t: "房子 / ngôi nhà" },
+                    { e: "please", p: "[pliːz]", t: "请 / làm ơn" },
+                    { e: "school", p: "[skuːl]", t: "学校 / trường học" }
+                ],
+                dialogue: [
+                    { e: "Excuse me!", t: "对不起！ / Xin lỗi cho tôi hỏi!" },
+                    { e: "Yes?", t: "什么事？ / Vâng, có chuyện gì thế ạ?" },
+                    { e: "Is this your handbag?", t: "这是您的手提包吗？ / Đây có phải là túi xách của bạn không?" },
+                    { e: "Pardon?", t: "对不起，请再说一遍。 / Xin lỗi, bạn nói gì cơ?" },
+                    { e: "Is this your handbag?", t: "这是您的手提包吗？ / Đây có phải là túi xách của bạn không?" },
+                    { e: "Yes, it is.", t: "是的，是我的。 / Vâng, đúng rồi." },
+                    { e: "Thank you very much.", t: "非常感谢！ / Cảm ơn rất nhiều." }
+                ],
+                grammar: `
+                    <strong>1. Đại từ chỉ định (Demonstrative Pronoun): THIS</strong><br>
+                    - "This" có nghĩa là "đây, cái này". Dùng để chỉ một đối tượng số ít ở gần người nói.<br>
+                    - Ví dụ: <em>This is my handbag. (这是我的手提包 / Đây là túi xách của tôi).</em><br><br>
+                    <strong>2. Câu hỏi Yes/No với động từ "To Be"</strong><br>
+                    - <strong>Công thức:</strong> Is + this/that/it + (your/my) + Danh từ số ít?<br>
+                    - <strong>Trả lời:</strong> Khẳng định: <em>Yes, it is.</em> | Phủ định: <em>No, it isn't.</em><br><br>
+                    <div style="background:#fff; padding:15px; border-left:4px solid #FFCB05; margin-top:15px; border-radius:5px;">
+                        <strong>💎 Diamond sentences (钻石级句子):</strong><br>
+                        1. Thank you. (谢谢你 / Cảm ơn bạn).<br>
+                        2. Excuse me. (对不起，请原谅 / Xin lỗi, cho tôi hỏi).<br>
+                        3. Pardon? (请再说一遍 / Xin nhắc lại).
+                    </div>
+                `,
+                exercises: [
+                    { q: "1. A: _______, may I use your pen? B: Of course!", opts: ["A. Thank you", "B. Pardon", "C. Please", "D. Excuse me"], ans: 3, expl: "'Excuse me' dùng để thu hút sự chú ý một cách lịch sự trước khi muốn nhờ vả." },
+                    { q: "2. A: Is this your coat? B: _______?<br>A: Is this your coat? B: Yes, it is.", opts: ["A. Thank you", "B. Yes, it is.", "C. Pardon", "D. Excuse me"], ans: 2, expl: "Nhân vật A lặp lại câu hỏi lần 2, chứng tỏ B nghe không rõ. Dùng 'Pardon?' để yêu cầu nhắc lại." },
+                    { q: "3. A: Excuse me! B:_______?<br>A: Is this your car? B: No, it isn't.", opts: ["A. Pardon", "B. No", "C. Yes", "D. Thank you very much"], ans: 2, expl: "Đáp lại 'Excuse me!' ta dùng 'Yes?' (Vâng? / Có chuyện gì vậy?)." },
+                    { q: "4. A: Is this your dress? B: _______.", opts: ["A. Yes, it isn't", "B. No, it is", "C. No, isn't it", "D. Yes, it is"], ans: 3, expl: "Khẳng định đúng ngữ pháp là 'Yes, it is'." },
+                    { q: "5. A: Is this your watch? B: Yes, it is. A: Here you are. B:_______.", opts: ["A. Thanks you", "B. Thank very much", "C. Thanks you very much", "D. Thank you"], ans: 3, expl: "Người kia trả đồ lại cho bạn (Here you are), bạn cần lịch sự đáp lại 'Thank you'." },
+                    { q: "11. — Is this your dress?<br>— ______ ?<br>— Is this your dress?", opts: ["A. No", "B. Yes", "C. Pardon", "D. Sorry"], ans: 2, expl: "Tương tự câu 2, dùng Pardon để yêu cầu nhắc lại." },
+                    { q: "12. _______, what time is it?", opts: ["A. Thank you", "B. Excuse me", "C. Pardon", "D. Please"], ans: 1, expl: "Hỏi giờ là đang làm phiền người khác, phải nói 'Excuse me' trước." },
+                    { q: "13. — Is this your book?<br>— _______. Thank you very much.", opts: ["A. Yes, it is", "B. No, it isn't", "C. No, it is", "D. Yes, it isn't"], ans: 0, expl: "Nói cảm ơn chứng tỏ đã nhận lại sách của mình, nên phải xác nhận 'Yes, it is'." },
+                    { q: "14. _______, is this your car?", opts: ["A. Sorry", "B. Excuse me", "C. Pardon", "D. Please"], ans: 1, expl: "Bắt chuyện lịch sự với người lạ dùng 'Excuse me'." },
+                    { q: "15. _______, I'm late.", opts: ["A. Sorry", "B. Excuse me", "C. Pardon", "D. Please"], ans: 0, expl: "Làm sai hoặc đến trễ phải nói 'Sorry' (xin lỗi)." },
+                    { q: "16. — Is this _______ book?<br>— Yes, _______.", opts: ["A. your / it is", "B. you / it is", "C. his / it's", "D. I / it is"], ans: 0, expl: "Hỏi 'your book' (sách của bạn) và trả lời 'Yes, it is'." },
+                    { q: "17. — ______ this your pen?<br>— _______, it's his pen.", opts: ["A. is / Yes", "B. is / No", "C. Is / No", "D. Is / Yes"], ans: 2, expl: "Đầu câu viết hoa 'Is'. Vế sau nói 'it's his pen' (bút của anh ấy) nên phải đáp 'No'." },
+                    { q: "18. — Is this your shirt?<br>— _______. It's his shirt.", opts: ["A. Yes, he is", "B. No, he is", "C. Yes, it is", "D. No, it isn't"], ans: 3, expl: "Phủ định 'Đây không phải áo của tôi' dùng 'No, it isn't'." },
+                    { q: "19. _______ you a boy?", opts: ["A. Is", "B. Am", "C. Are", "D. Be"], ans: 2, expl: "Chủ ngữ 'you' đi với động từ to be 'Are'." },
+                    { q: "20. — Is this your father?<br>— Yes, _______ is my father.", opts: ["A. this", "B. that", "C. she", "D. he"], ans: 3, expl: "'Father' là nam giới nên dùng đại từ 'he'." },
+                    // Dialogue Matching
+                    { textBlock: "<strong>补全对话 / Hoàn thành hội thoại:</strong><br>A: Excuse me.<br>B: (36)______<br>A: Is this your pen?<br>B: (37)______<br>A: Is this your pen?<br>B: (38)______<br>A: (39)______<br>B: Thank you.<br>A: (40)______", q: "36. Điền vào vị trí (36):", opts: ["A. Pardon?", "B. Yes?", "C. Yes, it is.", "D. You are welcome.", "E. Here you are."], ans: 1, expl: "Đáp lại 'Excuse me' bằng 'Yes?'" },
+                    { q: "37. Điền vào vị trí (37):", opts: ["A. Pardon?", "B. Yes?", "C. Yes, it is.", "D. You are welcome.", "E. Here you are."], ans: 0, expl: "Vì A phải lặp lại câu hỏi nên B đã dùng 'Pardon?'." },
+                    { q: "38. Điền vào vị trí (38):", opts: ["A. Pardon?", "B. Yes?", "C. Yes, it is.", "D. You are welcome.", "E. Here you are."], ans: 2, expl: "Xác nhận đúng là bút của mình: 'Yes, it is.'." },
+                    { q: "39. Điền vào vị trí (39):", opts: ["A. Pardon?", "B. Yes?", "C. Yes, it is.", "D. You are welcome.", "E. Here you are."], ans: 4, expl: "Đưa đồ cho B dùng 'Here you are.' (Của bạn đây)." },
+                    { q: "40. Điền vào vị trí (40):", opts: ["A. Pardon?", "B. Yes?", "C. Yes, it is.", "D. You are welcome.", "E. Here you are."], ans: 3, expl: "Đáp lại lời 'Thank you' bằng 'You are welcome.' (Không có gì)." },
+                    // Cloze Test
+                    { textBlock: "<strong>完形填空 / Cloze Test:</strong><br>I am (41)____ girl. I am six. I (42)____ at school. (43)____ name is Zhang Hua. I have (44)____ cat. It (45)____ white. Jim is (46)____ English boy. He is seven. He and I (47)____ in the same class. He is my friend. We (48)____ good friends. Miss Gao (49)____ my teacher. (50)____ is a good teacher.", q: "41. Điền vào (41):", opts: ["A. an", "B. the", "C. \\", "D. a"], ans: 3, expl: "'girl' bắt đầu bằng phụ âm, dùng 'a'." },
+                    { q: "42. Điền vào (42):", opts: ["A. am", "B. is", "C. are", "D. be"], ans: 0, expl: "Chủ ngữ I đi với to be 'am'." },
+                    { q: "43. Điền vào (43):", opts: ["A. I", "B. My", "C. He", "D. You"], ans: 1, expl: "Cần tính từ sở hữu 'My' (tên của tôi)." },
+                    { q: "44. Điền vào (44):", opts: ["A. a", "B. an", "C. \\", "D. the"], ans: 0, expl: "'cat' bắt đầu bằng phụ âm, dùng 'a'." },
+                    { q: "45. Điền vào (45):", opts: ["A. am", "B. is", "C. are", "D. be"], ans: 1, expl: "Chủ ngữ 'It' đi với to be 'is'." },
+                    { q: "46. Điền vào (46):", opts: ["A. an", "B. a", "C. the", "D. \\"], ans: 0, expl: "'English' bắt đầu bằng nguyên âm, dùng 'an'." },
+                    { q: "47. Điền vào (47):", opts: ["A. is", "B. am", "C. be", "D. are"], ans: 3, expl: "Chủ ngữ 'He and I' (số nhiều) đi với to be 'are'." },
+                    { q: "48. Điền vào (48):", opts: ["A. are", "B. am", "C. is", "D. be"], ans: 0, expl: "Chủ ngữ 'We' đi với to be 'are'." },
+                    { q: "49. Điền vào (49):", opts: ["A. are", "B. is", "C. am", "D. does"], ans: 1, expl: "'Miss Gao' là ngôi thứ 3 số ít, dùng 'is'." },
+                    { q: "50. Điền vào (50):", opts: ["A. He", "B. I", "C. She", "D. You"], ans: 2, expl: "Đại từ thay thế cho cô giáo 'Miss Gao' là 'She'." }
+                ],
+                translations: [
+                    { q: "21. This is my coat. (Đổi sang câu hỏi Yes/No)", a: "Is this your coat?" },
+                    { q: "22. Is this your car? (Viết câu trả lời khẳng định)", a: "Yes, it is." },
+                    { q: "23. This is a house. (Đổi sang câu hỏi Yes/No)", a: "Is this a house?" },
+                    { q: "24. Thank you very much. (Viết lại câu đồng nghĩa)", a: "Thanks a lot." },
+                    { q: "25. Is this your book? (Đổi sang câu khẳng định)", a: "This is your book." },
+                    { q: "26. Đại từ 'I' đổi sang Tân ngữ (宾格) là gì?", a: "me" },
+                    { q: "27. Đại từ 'you' đổi sang Tính từ sở hữu (形容词性物主代词) là gì?", a: "your" },
+                    { q: "28. Động từ 'be' ở ngôi thứ 3 số ít hiện tại (单三) là gì?", a: "is" },
+                    { q: "29. Đại từ 'it' đổi sang Tân ngữ (宾格) là gì?", a: "it" },
+                    { q: "30. Từ trái nghĩa (对应词) của 'this' là gì?", a: "that" },
+                    { q: "31. Is this your handbag? (Dịch sang tiếng Trung/Việt)", a: "这是你的手提包吗？ / Đây có phải túi xách của bạn không?" },
+                    { q: "32. Pardon? (Dịch)", a: "对不起，请再说一遍。 / Xin lỗi, xin nhắc lại." },
+                    { q: "33. 非常感谢。/ Cảm ơn rất nhiều.", a: "Thank you very much." },
+                    { q: "34. 打扰一下。/ Xin lỗi làm phiền một chút.", a: "Excuse me." },
+                    { q: "35. 是的，它是。/ Vâng, đúng vậy.", a: "Yes, it is." },
+                    // Form filling
+                    { textBlock: "<strong>阅读填表 (Form Completion):</strong><br>My name is Zhang Mei. I'm a Chinese girl. I am twelve. I'm in No.9 Middle School. I'm in Class Five, Grade Two. I'm in Row Three. I'm Number Nine. My telephone number is 0432-66554321. The postcode is 132011. My blood type is B.", q: "51. Name:", a: "Zhang Mei" },
+                    { q: "52. Age:", a: "12 (hoặc twelve)" },
+                    { q: "53. Blood type:", a: "B" },
+                    { q: "54. Class:", a: "Five" },
+                    { q: "55. Name of school:", a: "No.9 Middle School" },
+                    { q: "56. Number:", a: "Nine" },
+                    { q: "57. Row:", a: "Three" },
+                    { q: "58. Postcode:", a: "132011" },
+                    { q: "59. Tel:", a: "0432-66554321" },
+                    { q: "60. Nationality:", a: "Chinese" }
+                ]
+            },
+            2: {
+                title: "Bài 2 (Lesson 3): Sorry, sir.",
+                vocab: [
+                    { e: "umbrella", p: "[ʌmˈbrelə]", t: "伞 / chiếc ô" },
+                    { e: "please", p: "[pliːz]", t: "请 / làm ơn" },
+                    { e: "here", p: "[hɪə(r)]", t: "这里 / ở đây" },
+                    { e: "ticket", p: "[ˈtɪkɪt]", t: "票 / vé, thẻ giữ đồ" },
+                    { e: "number", p: "[ˈnʌmbə(r)]", t: "号码 / số" },
+                    { e: "five", p: "[faɪv]", t: "五 / số năm" },
+                    { e: "sorry", p: "[ˈsɒri]", t: "对不起 / xin lỗi" },
+                    { e: "sir", p: "[sɜː(r)]", t: "先生 / ngài, ông" },
+                    { e: "cloakroom", p: "[ˈkləʊkruːm]", t: "衣帽存放处 / phòng cất giữ đồ" }
+                ],
+                dialogue: [
+                    { e: "My coat and my umbrella please. Here is my ticket.", t: "请把我的大衣和伞给我。这是我的票据。 / Làm ơn cho tôi áo khoác và ô. Đây là vé của tôi." },
+                    { e: "Thank you, sir. Number five.", t: "谢谢您，先生。5号。 / Cảm ơn ngài. Số 5 ạ." },
+                    { e: "Here's your umbrella and your coat.", t: "这是您的伞和大衣。 / Đây là ô và áo khoác của ngài." },
+                    { e: "This is not my umbrella.", t: "这不是我的伞。 / Đây không phải ô của tôi." },
+                    { e: "Sorry sir.", t: "对不起，先生。 / Xin lỗi ngài." },
+                    { e: "Is this your umbrella?", t: "这把是您的吗？ / Cây này có phải của ngài không ạ?" },
+                    { e: "No, it isn't.", t: "不，不是。 / Không, không phải." },
+                    { e: "Is this it?", t: "这把是吗？ / Vậy cây này có phải không?" },
+                    { e: "Yes, it is.", t: "是的，是这把。 / Vâng, đúng là nó rồi." },
+                    { e: "Thank you very much.", t: "非常感谢。 / Cảm ơn rất nhiều." }
+                ],
+                grammar: `
+                    <strong>1. Câu phủ định với động từ "To Be"</strong><br>
+                    - <strong>Công thức:</strong> Chủ ngữ + am/is/are + NOT + Danh từ/Tính từ<br>
+                    - Ví dụ: <em>This is not my umbrella. (这不是我的伞 / Đây không phải là ô của tôi).</em><br>
+                    - Viết tắt: is not = isn't.<br><br>
+                    <strong>2. Đưa đồ vật cho ai đó</strong><br>
+                    - Cấu trúc: <em>Here is + Danh từ số ít</em> (Đây là...)<br>
+                    - Ví dụ: <em>Here is my ticket. (这是我的票 / Đây là vé của tôi).</em><br>
+                    - Khi đưa đồ cho người khác, ta cũng có thể nói: <strong>Here you are.</strong> (Của bạn đây).
+                `,
+                exercises: [
+                    { q: "1. A: My handbag, _______. _______ is my ticket. B: Thank you.", opts: ["A. sorry; Please", "B. thank you; It", "C. here; This", "D. please; Here"], ans: 3, expl: "Từ 'please' đặt ở cuối để yêu cầu một cách lịch sự. 'Here is...' là cấu trúc dùng khi đưa thứ gì đó cho người khác xem/nhận (Đây là vé của tôi)." },
+                    { q: "2. A: This is _______ umbrella. B: OK, here you are.", opts: ["A. your", "B. his", "C. my", "D. her"], ans: 2, expl: "Theo ngữ cảnh (OK, của bạn đây), nhân vật A đang xin lại ô của chính mình, do đó dùng tính từ sở hữu 'my' (của tôi) là hợp lý nhất." },
+                    { q: "3. A: This is a pen. B: No, _______, it is a pencil.", opts: ["A. this is not a pencil", "B. this is a pen", "C. this is a pencil", "D. this is not a pen"], ans: 3, expl: "Nhân vật B phủ nhận ý kiến của A. Vì A nói 'Đây là cái bút máy', nên B phải nói 'Đây KHÔNG PHẢI là bút máy (This is not a pen), nó là bút chì'." },
+                    { q: "4. A: Excuse me. Is this your coat? B: _______. Thank you very much.", opts: ["A. Yes, is it", "B. No, it is", "C. Yes, it is", "D. No, it isn't"], ans: 2, expl: "B trả lời kèm theo 'Thank you very much', nghĩa là người B đã nhận lại áo của mình. Do đó câu trả lời phải là khẳng định: 'Yes, it is'." },
+                    { q: "5. A: Is this your dress? B: _______. My dress is yellow.", opts: ["A. Yes, is it", "B. No, it is", "C. Yes, it isn't", "D. No, it isn't"], ans: 3, expl: "Vế sau B giải thích 'Áo của tôi màu vàng' (ngụ ý cái áo này màu khác), nên đây KHÔNG PHẢI áo của B. Trả lời phủ định chuẩn là 'No, it isn't'." }
+                ],
+                translations: [
+                    { q: "1. Mark: 劳驾，请把我的外套给我。这是我的票据。 / Làm ơn cho tôi áo khoác. Đây là vé của tôi.", a: "Mark: My coat, please. Here is my ticket." },
+                    { q: "2. Tom: 谢谢，先生。这是您的外套。 / Cảm ơn ngài. Đây là áo khoác của ngài.", a: "Tom: Thank you, sir. Here is your coat." },
+                    { q: "3. Mark: 这不是我的外套。我的外套是黄色的。 / Đây không phải áo khoác của tôi. Áo khoác của tôi màu vàng.", a: "Mark: This is not my coat. My coat is yellow." },
+                    { q: "4. Tom: 抱歉，先生。这件是吗？ / Xin lỗi ngài. Cái này có phải không?", a: "Tom: Sorry, sir. Is this it?" },
+                    { q: "5. Mark: 是的，是这件。非常感谢。 / Vâng, đúng nó rồi. Rất cảm ơn cậu.", a: "Mark: Yes, it is. Thank you very much." }
+                ]
+            },
+            3: {
+                title: "Bài 3 (Lesson 5): Nice to meet you.",
+                vocab: [
+                    { e: "Mr.", p: "[ˈmɪstə(r)]", t: "先生 / Ông, thầy" },
+                    { e: "good", p: "[ɡʊd]", t: "好 / tốt" },
+                    { e: "morning", p: "[ˈmɔːnɪŋ]", t: "早晨 / buổi sáng" },
+                    { e: "Miss", p: "[mɪs]", t: "小姐 / Cô" },
+                    { e: "new", p: "[njuː]", t: "新的 / mới" },
+                    { e: "student", p: "[ˈstjuːdnt]", t: "学生 / học sinh" },
+                    { e: "French", p: "[frentʃ]", t: "法国人 / người Pháp" },
+                    { e: "German", p: "[ˈdʒɜːmən]", t: "德国人 / người Đức" },
+                    { e: "nice", p: "[naɪs]", t: "美好的 / tốt, vui" },
+                    { e: "meet", p: "[miːt]", t: "遇见 / gặp gỡ" }
+                ],
+                dialogue: [
+                    { e: "Good morning.", t: "早上好。 / Chào buổi sáng." },
+                    { e: "Good morning, Mr. Blake.", t: "早上好，布莱克先生。 / Chào buổi sáng, thầy Blake." },
+                    { e: "This is Miss Sophie Dupont. Sophie is a new student.", t: "这位是索菲·杜邦小姐。索菲是个新学生。 / Đây là cô Sophie Dupont. Sophie là học sinh mới." },
+                    { e: "She is French.", t: "她是法国人。 / Cô ấy là người Pháp." },
+                    { e: "Sophie, this is Hans. He is German.", t: "索菲，这位是汉斯。他是德国人。 / Sophie, đây là Hans. Cậu ấy là người Đức." },
+                    { e: "Nice to meet you.", t: "很高兴见到你。 / Rất vui được gặp bạn." },
+                    { e: "And this is Naoko. She's Japanese.", t: "这位是直子。她是日本人。 / Và đây là Naoko. Cô ấy là người Nhật Bản." },
+                    { e: "Nice to meet you.", t: "很高兴见到你。 / Rất vui được gặp bạn." },
+                    { e: "And this is Luming. He is Chinese.", t: "这位是鲁明。他是中国人。 / Và đây là Luming. Cậu ấy là người Trung Quốc." },
+                    { e: "Nice to meet you.", t: "很高兴见到你。 / Rất vui được gặp bạn." }
+                ],
+                grammar: `
+                    <strong>1. Đại từ nhân xưng (Personal Pronouns)</strong><br>
+                    - <strong>He</strong> (Anh ấy, ông ấy) - Dùng cho nam giới số ít. Đi với động từ to be: <em>is</em>.<br>
+                    - <strong>She</strong> (Cô ấy, bà ấy) - Dùng cho nữ giới số ít. Đi với động từ to be: <em>is</em>.<br>
+                    - Ví dụ: <em>He is a teacher. (他是老师 / Ông ấy là giáo viên).</em><br><br>
+                    <strong>2. Mẫu câu giới thiệu</strong><br>
+                    - Khi muốn giới thiệu ai đó với người khác, ta dùng cấu trúc: <strong>This is + Tên người</strong>.<br>
+                    - Ví dụ: <em>This is Miss Sophie Dupont. (这位是索菲·杜邦小姐 / Đây là cô Sophie Dupont).</em><br>
+                    - Đáp lại lời giới thiệu: <strong>Nice to meet you.</strong> (很高兴认识你 / Rất vui được gặp bạn).
+                `,
+                exercises: [
+                    { q: "1. Mr. Wang: _________, Miss Li. Miss Li: Good morning.", opts: ["A. Hello", "B. Good morning", "C. Good evening", "D. Goodbye"], ans: 1, expl: "Cách trả lời lịch sự nhất khi ai đó chào 'Good morning' (Chào buổi sáng) là chào lại bằng chính cụm từ 'Good morning'." },
+                    { q: "2. A: _______ is Mr. Blake. He is a teacher.", opts: ["A. These", "B. That", "C. This", "D. It"], ans: 2, expl: "Cấu trúc dùng để giới thiệu một người khác ở khoảng cách gần là 'This is + tên người'. (Ví dụ: This is Mr. Blake - Đây là ông Blake)." },
+                    { q: "3. A: Is she French? B: Yes, _______.", opts: ["A. he is", "B. she is", "C. it is", "D. is she"], ans: 1, expl: "Câu hỏi bắt đầu bằng 'Is she' nên câu trả lời khẳng định phải lặp lại chủ ngữ đó: 'Yes, she is'." },
+                    { q: "4. A: What is _______ name? B: His name is Hans.", opts: ["A. her", "B. his", "C. my", "D. your"], ans: 1, expl: "Câu trả lời là 'His name is Hans' (Tên anh ấy là Hans), do đó câu hỏi cũng phải hỏi về tên của nam giới, ta dùng tính từ sở hữu 'his' (What is his name?)." },
+                    { q: "5. A: Nice to meet you. B: _______.", opts: ["A. Thank you", "B. Yes", "C. Nice to meet you, too", "D. Good"], ans: 2, expl: "Khi ai đó nói 'Nice to meet you' (Rất vui được gặp bạn), cách đáp lại tiêu chuẩn và lịch sự nhất là thêm chữ 'too' (cũng) ở cuối: 'Nice to meet you, too'." }
+                ],
+                translations: [
+                    { q: "1. Mr. Wang: 早上好，李小姐。 / Chào buổi sáng, cô Li.", a: "Mr. Wang: Good morning, Miss Li." },
+                    { q: "2. Miss Li: 早上好，王先生。 / Chào buổi sáng, ông Wang.", a: "Miss Li: Good morning, Mr. Wang." },
+                    { q: "3. Mr. Wang: 李小姐，这位是布莱克先生。他是位新老师。 / Cô Li, đây là ông Blake. Ông ấy là giáo viên mới.", a: "Mr. Wang: Miss Li, this is Mr. Blake. He is a new teacher." },
+                    { q: "4. Miss Li: 很高兴认识你。 / Rất vui được gặp ngài.", a: "Miss Li: Nice to meet you." },
+                    { q: "5. Mr. Blake: 我也很高兴认识你。 / Tôi cũng rất vui được gặp cô.", a: "Mr. Blake: Nice to meet you, too." }
+                ]
+            }
+        };
+
+        let currentId = 1;
+
+        function initApp() {
+            const menu = document.getElementById('lesson-menu');
+            for(let i=1; i<=7; i++) { 
+                const li = document.createElement('li');
+                li.innerText = `Bài ${i}`;
+                if(i === 1) li.classList.add('active');
+                
+                li.onclick = () => {
+                    document.querySelectorAll('.lesson-menu li').forEach(el => el.classList.remove('active'));
+                    li.classList.add('active');
+                    if(lessonData[i]) {
+                        currentId = i;
+                        renderLesson(i);
+                    } else {
+                        alert("Dữ liệu bài này đang được biên soạn, mời您稍后再来查看！");
+                    }
+                };
+                menu.appendChild(li);
+            }
+            renderLesson(1);
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'en-US';
+                u.rate = 0.85;
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        function playFullDialogue() {
+            let fullText = lessonData[currentId].dialogue.map(d => d.e).join(". ");
+            speakText(fullText);
+        }
+
+        function renderLesson(id) {
+            const data = lessonData[id];
+            document.getElementById('lesson-title').innerText = data.title;
+
+            // Render Vocabulary
+            document.getElementById('vocab-container').innerHTML = data.vocab.map(v => `
+                <tr>
+                    <td style="text-align:center;">
+                        <button class="btn-audio-small" onclick="speakText('${v.e.replace(/'/g, "\\'")}')">🔊</button>
+                    </td>
+                    <td><strong>${v.e}</strong></td>
+                    <td style="font-family: Arial;">${v.p}</td>
+                    <td>${v.t}</td>
+                </tr>
+            `).join('');
+
+            // Render Dialogue
+            document.getElementById('dialogue-container').innerHTML = data.dialogue.map(d => `
+                <div class="dialogue-line">
+                    <strong>•</strong> <span style="cursor:pointer;" onclick="speakText('${d.e.replace(/'/g, "\\'")}')" title="Nghe câu này">${d.e}</span>
+                    <span class="translation-block">${d.t}</span>
+                </div>
+            `).join('');
+
+            // Render Grammar
+            document.getElementById('grammar-container').innerHTML = data.grammar;
+
+            // Render Multiple Choice / Cloze (With textBlock feature)
+            document.getElementById('exercises-container').innerHTML = data.exercises.map((ex, i) => `
+                ${ex.textBlock ? `<div style="background:#f4f4f4; padding:15px; margin-bottom:15px; border-radius:5px; border-left:4px solid #17a2b8; line-height: 1.6;">${ex.textBlock}</div>` : ''}
+                <div class="quiz-item">
+                    <div class="quiz-question">${ex.q}</div>
+                    <div class="quiz-options">
+                        ${ex.opts.map((opt, optIdx) => `
+                            <button class="option-btn" onclick="checkAnswer(this, ${optIdx === ex.ans}, ${ex.ans})">${opt}</button>
+                        `).join('')}
+                    </div>
+                    <div class="feedback-area">
+                        <button class="btn-expl" onclick="toggleExpl(this)">查看解析 💡</button>
+                        <div class="expl-text"><strong>解析 (Giải thích):</strong> ${ex.expl}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Translation / Open-ended (With textBlock feature)
+            let transHTML = data.translations.map((t, i) => `
+                ${t.textBlock ? `<div style="background:#f4f4f4; padding:15px; margin-bottom:15px; border-radius:5px; border-left:4px solid #28a745; line-height: 1.6;">${t.textBlock}</div>` : ''}
+                <div class="trans-item">
+                    <span class="trans-label">${t.q}</span>
+                    <input type="text" class="trans-input" placeholder="输入您的答案... (Nhập câu trả lời của bạn...)">
+                    <button class="trans-ans-btn" onclick="showAnswer(this, '${t.a.replace(/'/g, "\\'")}')">查看答案 (Xem đáp án)</button>
+                    <div class="trans-result"></div>
+                </div>
+            `).join('');
+            
+            // Append Self motivation quote if exists
+            if (data.quote) {
+                transHTML += `
+                    <div style="margin-top: 30px; padding: 15px; background: #FFF9E6; border-left: 4px solid #FFCB05; font-style: italic; color: #C69B00; border-radius: 4px;">
+                        <strong>🌱 每日激励 (Daily Motivation):</strong> ${data.quote}
+                    </div>
+                `;
+            }
+            document.getElementById('translation-container').innerHTML = transHTML;
+        }
+
+        // Logic check answer
+        function checkAnswer(btn, isCorrect, correctIndex) {
+            const optionsDiv = btn.parentElement;
+            const buttons = optionsDiv.querySelectorAll('.option-btn');
+            
+            buttons.forEach(b => b.disabled = true);
+            
+            if (isCorrect) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong'); 
+                buttons[correctIndex].classList.add('highlight-correct');
+            }
+
+            const feedbackArea = optionsDiv.nextElementSibling;
+            feedbackArea.style.display = 'block';
+        }
+
+        // Logic toggle explanation
+        function toggleExpl(btn) {
+            const explText = btn.nextElementSibling;
+            if (explText.style.display === 'none' || explText.style.display === '') {
+                explText.style.display = 'block';
+                btn.innerText = '隐藏解析 🔼';
+            } else {
+                explText.style.display = 'none';
+                btn.innerText = '查看解析 💡';
+            }
+        }
+
+        function showAnswer(btn, ans) {
+            const res = btn.nextElementSibling;
+            res.innerHTML = `<strong>参考答案:</strong> ${ans}`;
+            res.style.display = 'block';
+        }
+
+        initApp();
+    </script>
+</body>
+</html>
